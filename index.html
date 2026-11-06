@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SpeakBand – Luyện nói IELTS với AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Hanken+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef2f7;--card:#fff;--ink:#12263a;--mute:#5b6b7d;--line:#d5dde7;--ac:#2a35f0;--ac-ink:#fff;--mark:#ffc83d;--bad:#c4321f;--ok:#12805c}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1a28;--card:#16273a;--ink:#eaf0f7;--mute:#9db0c4;--line:#2a3f56;--ac:#7c86ff;--ac-ink:#0e1a28;--bad:#ff8a78;--ok:#4fd1a1}}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "Hanken Grotesk",system-ui,sans-serif;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px}
+header{padding:28px 0 8px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.logo{font:800 22px "Bricolage Grotesque",sans-serif;letter-spacing:-.02em}
+.logo i{font-style:normal;background:var(--mark);color:#12263a;padding:0 6px;border-radius:4px;margin-left:2px}
+h1{font:800 clamp(34px,6vw,56px)/1.05 "Bricolage Grotesque",sans-serif;letter-spacing:-.03em;margin:28px 0 14px;max-width:16ch}
+.lead{color:var(--mute);max-width:52ch;margin:0 0 28px}
+details.set{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-bottom:20px}
+details.set summary{cursor:pointer;font-weight:700}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 12px;min-width:0}
+input{flex:1 1 260px}
+small{color:var(--mute)}
+a{color:var(--ac)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.tabs{display:flex;border-bottom:1px solid var(--line)}
+.tabs button{flex:1;background:none;border:0;border-right:1px solid var(--line);padding:14px 8px;font:700 15px "Hanken Grotesk",sans-serif;color:var(--mute);cursor:pointer}
+.tabs button:last-child{border-right:0}
+.tabs button[aria-selected=true]{color:var(--ink);box-shadow:inset 0 -3px 0 var(--ac)}
+.body{padding:24px}
+.qlabel{color:var(--mute);font-size:14px;margin:0 0 6px}
+#q{font:700 clamp(20px,3.4vw,27px)/1.3 "Bricolage Grotesque",sans-serif;white-space:pre-line;margin:0 0 18px}
+button.b{font:700 15px "Hanken Grotesk",sans-serif;border-radius:999px;padding:11px 20px;border:1px solid var(--line);background:none;color:var(--ink);cursor:pointer}
+button.pri{background:var(--ac);color:var(--ac-ink);border-color:var(--ac)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+.wave{width:100%;height:96px;display:block;margin:20px 0 6px;border-radius:8px;background:var(--bg)}
+.time{font:700 14px "Hanken Grotesk",sans-serif;color:var(--mute)}
+audio{width:100%;margin-top:12px}
+#status{min-height:24px;margin:14px 0 0;color:var(--mute)}
+#status.err{color:var(--bad)}
+#res{margin-top:24px;display:none}
+.score{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:18px}
+.big{font:800 64px/1 "Bricolage Grotesque",sans-serif;background:var(--mark);color:#12263a;border-radius:12px;padding:10px 20px}
+.crit{margin:0 0 16px}
+.crit .h{display:flex;justify-content:space-between;font-weight:700}
+.bar{height:8px;background:var(--bg);border-radius:4px;margin:4px 0 6px;overflow:hidden}
+.bar span{display:block;height:100%;background:var(--ac)}
+.crit p{margin:0;color:var(--mute);font-size:15px}
+h3{font:700 19px "Bricolage Grotesque",sans-serif;margin:26px 0 8px}
+.err-item{border-left:3px solid var(--bad);padding:2px 0 2px 12px;margin:0 0 12px}
+.err-item s{color:var(--bad)}.err-item b{color:var(--ok)}
+blockquote{margin:0;padding:12px 16px;background:var(--bg);border-radius:8px;white-space:pre-wrap}
+footer{padding:36px 0 48px;color:var(--mute);font-size:14px}
+dialog{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:24px;max-width:380px;width:calc(100% - 32px)}
+dialog::backdrop{background:rgba(10,20,30,.55)}
+dialog form{display:flex;flex-direction:column;gap:10px}
+dialog input{flex:none;width:100%}
+.tabs2{display:flex;gap:8px;margin-bottom:6px}
+.tabs2 button{flex:1;background:none;border:0;border-bottom:3px solid var(--line);padding:8px;font:700 15px "Hanken Grotesk",sans-serif;color:var(--mute);cursor:pointer}
+.tabs2 button[aria-selected=true]{color:var(--ink);border-color:var(--ac)}
+.aerr{color:var(--bad);margin:0;min-height:20px;font-size:14px}
+.lnk{background:none;border:0;color:var(--ac);font:inherit;cursor:pointer;padding:4px}
+.stats{display:flex;gap:28px;margin:8px 0 16px}
+.stats b{display:block;font:800 30px/1.1 "Bricolage Grotesque",sans-serif}
+#spark{color:var(--ac);width:100%;height:70px;display:block;background:var(--bg);border-radius:8px;margin-bottom:8px}
+.hi{display:flex;gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.hi .bd{font:800 18px "Bricolage Grotesque",sans-serif;background:var(--mark);color:#12263a;border-radius:8px;padding:2px 10px}
+.hi .t{flex:1;min-width:0}
+.hi .t div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="logo">Speak<i>Band</i></div><div class="row" style="margin:0;align-items:center"><small id="who"></small><button class="b" id="authBtn">Đăng nhập</button></div></header>
+<h1>Nói một câu, nhận band và lỗi cần sửa.</h1>
+<p class="lead">Chọn Part, ghi âm câu trả lời, AI nghe trực tiếp giọng bạn và chấm theo 4 tiêu chí IELTS Speaking: Fluency, Lexical Resource, Grammar, Pronunciation.</p>
+
+
+<main class="panel">
+<div class="tabs" role="tablist">
+<button role="tab" data-p="1" aria-selected="true">Part 1</button>
+<button role="tab" data-p="2" aria-selected="false">Part 2</button>
+<button role="tab" data-p="3" aria-selected="false">Part 3</button>
+</div>
+<div class="body">
+<p class="qlabel" id="plabel"></p>
+<p id="q"></p>
+<div class="row" style="margin-top:0">
+<button class="b" id="next">Đổi câu hỏi</button>
+<button class="b" id="prep" hidden>Chuẩn bị 1 phút</button>
+</div>
+<canvas class="wave" id="wave" width="800" height="96" aria-hidden="true"></canvas>
+<div class="time" id="time">00:00</div>
+<div class="row">
+<button class="b pri" id="rec">Bắt đầu ghi âm</button>
+<button class="b pri" id="grade" disabled>Chấm điểm</button>
+</div>
+<audio id="player" controls hidden></audio>
+<p id="status" role="status"></p>
+
+<section id="res" aria-live="polite">
+<div class="score"><div class="big" id="band">0</div><div><b>Band ước tính</b><div id="sum" style="color:var(--mute)"></div></div></div>
+<div id="crits"></div>
+<h3>Bản ghi lời nói</h3><blockquote id="tr"></blockquote>
+<h3>Lỗi cần sửa</h3><div id="errs"></div>
+<h3>Câu trả lời tốt hơn</h3><blockquote id="better"></blockquote>
+<h3>Việc nên làm tiếp theo</h3><p id="tips"></p>
+</section>
+</div>
+</main>
+<section class="panel" style="margin-top:20px"><div class="body">
+<h3 style="margin-top:0">Lịch sử luyện tập</h3>
+<p id="hmsg" style="color:var(--mute)">Đăng nhập để lưu và xem lại các lần làm.</p>
+<div id="hbody" hidden>
+<div class="stats"><div><b id="sN">0</b><small>lần làm</small></div><div><b id="sA">0</b><small>band trung bình</small></div><div><b id="sB">0</b><small>cao nhất</small></div></div>
+<svg id="spark" viewBox="0 0 300 70" preserveAspectRatio="none" role="img" aria-label="Band theo thời gian"></svg>
+<div id="hlist"></div>
+</div></div></section>
+<dialog id="authDlg"><form id="authForm">
+<div class="tabs2"><button type="button" id="mLogin" aria-selected="true">Đăng nhập</button><button type="button" id="mReg" aria-selected="false">Đăng ký</button></div>
+<input id="aName" placeholder="Tên hiển thị" autocomplete="name" hidden>
+<input id="aMail" type="email" required placeholder="Email" autocomplete="email">
+<input id="aPass" type="password" required minlength="6" placeholder="Mật khẩu (từ 6 ký tự)" autocomplete="current-password">
+<p class="aerr" id="aErr" role="alert"></p>
+<button class="b pri" id="aGo" type="submit">Đăng nhập</button>
+<button class="b" id="aGoogle" type="button">Tiếp tục với Google</button>
+<div class="row" style="margin:0;justify-content:space-between"><button type="button" class="lnk" id="aReset">Quên mật khẩu?</button><button type="button" class="lnk" id="aClose">Đóng</button></div>
+</form></dialog>
+<footer>Điểm band chỉ mang tính tham khảo, không thay thế giám khảo IELTS thật.</footer>
+</div>
+
+<script>
+const WORKER_URL="https://DÁN-TÊN-WORKER.DÁN-TÊN-TÀI-KHOẢN.workers.dev";
+const $=s=>document.querySelector(s);
+const QS={
+1:["Let's talk about your hometown. Where is it, and what do you like most about it?","Do you work or are you a student? Why did you choose that?","How do you usually spend your weekends?","Do you enjoy cooking? Why or why not?","What kind of music do you like listening to?","How often do you use public transport?","Do you prefer to stay at home or go out in your free time?","What is your favourite season, and why?"],
+2:["Describe a person who has influenced you.\nYou should say:\n- who this person is\n- how you know them\n- what they did\n- and explain why they influenced you.","Describe a place you visited that you would like to go back to.\nYou should say:\n- where it is\n- when you went there\n- what you did there\n- and explain why you want to return.","Describe a useful skill you learned.\nYou should say:\n- what the skill is\n- how you learned it\n- when you use it\n- and explain why it is useful.","Describe a book or film that made a strong impression on you.\nYou should say:\n- what it was\n- when you read or watched it\n- what it was about\n- and explain why it impressed you."],
+3:["How has technology changed the way people learn languages?","Why do some people find it difficult to speak a foreign language in public?","Do you think children should start learning English at a very young age? Why?","How important is it for a country to preserve its traditions?","What are the advantages and disadvantages of working from home?","In what ways can cities become more environmentally friendly?"]
+};
+const LBL={1:"Part 1 – Câu hỏi quen thuộc, trả lời 2–3 câu.",2:"Part 2 – Chuẩn bị 1 phút, nói 1–2 phút.",3:"Part 3 – Thảo luận sâu, trả lời 4–5 câu."};
+let part=1,rec=null,chunks=[],stream=null,actx=null,raf=0,t0=0,tick=0,blob=null,prepT=0;
+
+
+function setStatus(t,err){const s=$("#status");s.textContent=t;s.className=err?"err":""}
+function newQ(){const a=QS[part];let q;do{q=a[Math.floor(Math.random()*a.length)]}while(a.length>1&&q===$("#q").textContent);$("#q").textContent=q;$("#plabel").textContent=LBL[part];reset()}
+function reset(){blob=null;$("#grade").disabled=true;$("#player").hidden=true;$("#res").style.display="none";$("#time").textContent="00:00";setStatus("");clearInterval(prepT)}
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
+  if(rec)return;part=+b.dataset.p;
+  document.querySelectorAll(".tabs button").forEach(x=>x.setAttribute("aria-selected",x===b));
+  $("#prep").hidden=part!==2;newQ();
+});
+$("#next").onclick=()=>{if(!rec)newQ()};
+$("#prep").onclick=()=>{
+  clearInterval(prepT);let n=60;
+  const f=()=>{$("#time").textContent="Chuẩn bị: "+n+"s";if(n--<=0){clearInterval(prepT);$("#time").textContent="Hết giờ chuẩn bị, hãy bắt đầu nói.";}};
+  f();prepT=setInterval(f,1000);
+};
+
+const cv=$("#wave"),g=cv.getContext("2d");
+function draw(an){
+  const d=new Uint8Array(an.fftSize);
+  (function loop(){
+    an.getByteTimeDomainData(d);
+    g.clearRect(0,0,cv.width,cv.height);
+    g.fillStyle=getComputedStyle(document.body).getPropertyValue("--ac");
+    const bars=80,step=Math.floor(d.length/bars),w=cv.width/bars;
+    for(let i=0;i<bars;i++){
+      let m=0;for(let j=0;j<step;j++)m=Math.max(m,Math.abs(d[i*step+j]-128));
+      const h=Math.max(3,m/128*cv.height*1.6);
+      g.fillRect(i*w+1,(cv.height-h)/2,w-3,h);
+    }
+    raf=requestAnimationFrame(loop);
+  })();
+}
+const fmt=s=>String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+
+$("#rec").onclick=async()=>{
+  if(rec){rec.stop();return}
+  try{stream=await navigator.mediaDevices.getUserMedia({audio:true})}
+  catch(e){setStatus("Không mở được micro. Hãy cho phép quyền micro trong trình duyệt.",1);return}
+  reset();chunks=[];rec=new MediaRecorder(stream);
+  rec.ondataavailable=e=>e.data.size&&chunks.push(e.data);
+  rec.onstop=()=>{
+    cancelAnimationFrame(raf);clearInterval(tick);stream.getTracks().forEach(t=>t.stop());actx&&actx.close();
+    blob=new Blob(chunks,{type:rec.mimeType});rec=null;
+    $("#player").src=URL.createObjectURL(blob);$("#player").hidden=false;
+    $("#grade").disabled=false;$("#rec").textContent="Ghi âm lại";$("#next").disabled=false;
+    g.clearRect(0,0,cv.width,cv.height);setStatus("Đã ghi xong. Nghe lại hoặc bấm Chấm điểm.");
+  };
+  actx=new (window.AudioContext||window.webkitAudioContext)();
+  const an=actx.createAnalyser();an.fftSize=1024;actx.createMediaStreamSource(stream).connect(an);draw(an);
+  rec.start();t0=Date.now();tick=setInterval(()=>$("#time").textContent=fmt(Math.floor((Date.now()-t0)/1000)),250);
+  $("#rec").textContent="Dừng ghi âm";$("#grade").disabled=true;$("#next").disabled=true;
+};
+
+function b64(buf){const u=new Uint8Array(buf);let s="";for(let i=0;i<u.length;i+=8192)s+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return btoa(s)}
+async function toWav(bl){
+  const c=new (window.AudioContext||window.webkitAudioContext)();
+  const buf=await c.decodeAudioData(await bl.arrayBuffer());c.close();
+  const rate=16000,off=new OfflineAudioContext(1,Math.max(1,Math.ceil(buf.duration*rate)),rate);
+  const src=off.createBufferSource();src.buffer=buf;src.connect(off.destination);src.start();
+  const r=(await off.startRendering()).getChannelData(0),n=r.length,d=new DataView(new ArrayBuffer(44+n*2));
+  const w=(o,t)=>{for(let i=0;i<t.length;i++)d.setUint8(o+i,t.charCodeAt(i))};
+  w(0,"RIFF");d.setUint32(4,36+n*2,true);w(8,"WAVEfmt ");d.setUint32(16,16,true);d.setUint16(20,1,true);d.setUint16(22,1,true);
+  d.setUint32(24,rate,true);d.setUint32(28,rate*2,true);d.setUint16(32,2,true);d.setUint16(34,16,true);w(36,"data");d.setUint32(40,n*2,true);
+  for(let i=0;i<n;i++)d.setInt16(44+i*2,Math.max(-1,Math.min(1,r[i]))*32767,true);
+  return d.buffer;
+}
+
+function prompt(q){return `You are a strict, experienced IELTS Speaking examiner. The candidate answered IELTS Speaking Part ${part}.
+Question: """${q}"""
+Listen to the audio and assess it using the official public band descriptors (Fluency and Coherence, Lexical Resource, Grammatical Range and Accuracy, Pronunciation). Use half-band steps from 1 to 9. Be realistic and do not inflate scores. If the audio is silent, off-topic or too short to judge, say so and score low.
+Write all feedback text in Vietnamese. Keep English words only for quoted examples.
+Return ONLY JSON in this shape:
+{"transcript":"what the candidate said, verbatim","overall":6.5,"summary":"one sentence in Vietnamese",
+"criteria":[{"name":"Fluency & Coherence","band":6.5,"comment":"..."},{"name":"Lexical Resource","band":6.5,"comment":"..."},{"name":"Grammar","band":6.5,"comment":"..."},{"name":"Pronunciation","band":6.5,"comment":"..."}],
+"errors":[{"original":"phrase said","fix":"corrected phrase","why":"short Vietnamese reason"}],
+"better":"a Band 7.5+ version of the answer in English, keeping the candidate's ideas",
+"tips":"2-3 concrete next steps in Vietnamese"}`}
+
+$("#grade").onclick=async()=>{
+  const tok=window.getToken?await window.getToken():null;
+  if(!tok){setStatus("Hãy đăng nhập để chấm điểm.",1);window.openAuth&&window.openAuth();return}
+  $("#grade").disabled=true;$("#rec").disabled=true;setStatus("Đang nghe và chấm điểm, chờ khoảng 10–30 giây...");
+  try{
+    const wav=await toWav(blob);
+    const res=await fetch(WORKER_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
+      body:JSON.stringify({contents:[{parts:[{text:prompt($("#q").textContent)},{inline_data:{mime_type:"audio/wav",data:b64(wav)}}]}],generationConfig:{responseMimeType:"application/json",temperature:.3}})
+    });
+    const j=await res.json();window.__left=res.headers.get("X-Remaining");
+    if(!res.ok)throw new Error(j.error?.message||("Lỗi "+res.status));
+    const txt=j.candidates?.[0]?.content?.parts?.map(p=>p.text||"").join("")||"";
+    const r=JSON.parse(txt.replace(/```json|```/g,"").trim());
+    show(r);setStatus("");
+    window.saveAttempt&&window.saveAttempt({part,question:$("#q").textContent,result:r});
+  }catch(e){setStatus("Không chấm được: "+e.message,1)}
+  $("#grade").disabled=false;$("#rec").disabled=false;
+};
+
+function el(t,c,x){const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+function show(r){
+  $("#band").textContent=r.overall??"–";$("#sum").textContent=r.summary||"";
+  const cr=$("#crits");cr.replaceChildren();
+  (r.criteria||[]).forEach(c=>{
+    const d=el("div","crit"),h=el("div","h"),b=el("div","bar"),s=el("span");
+    h.append(el("span",null,c.name),el("span",null,c.band));
+    s.style.width=Math.min(100,(c.band/9)*100)+"%";b.append(s);
+    d.append(h,b,el("p",null,c.comment));cr.append(d);
+  });
+  $("#tr").textContent=r.transcript||"";
+  const er=$("#errs");er.replaceChildren();
+  (r.errors||[]).forEach(e=>{
+    const d=el("div","err-item"),p=el("div");
+    p.append(el("s",null,e.original)," → ",el("b",null,e.fix));
+    d.append(p,el("small",null,e.why));er.append(d);
+  });
+  if(!(r.errors||[]).length)er.append(el("p",null,"Không phát hiện lỗi rõ ràng."));
+  $("#better").textContent=r.better||"";$("#tips").textContent=r.tips||"";
+  $("#res").style.display="block";$("#res").scrollIntoView({behavior:"smooth"});
+}
+newQ();
+</script>
+<script type="module">
+/* ====== DÁN CẤU HÌNH FIREBASE CỦA BẠN VÀO ĐÂY ====== */
+const CFG={apiKey:"DÁN_API_KEY",authDomain:"DÁN_PROJECT_ID.firebaseapp.com",projectId:"DÁN_PROJECT_ID",appId:"DÁN_APP_ID"};
+/* =================================================== */
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signInWithPopup,GoogleAuthProvider,signOut,updateProfile,sendPasswordResetEmail} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import {getFirestore,collection,addDoc,query,orderBy,limit,getDocs,deleteDoc,doc,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+const Q=s=>document.querySelector(s);
+const ready=!CFG.apiKey.startsWith("DÁN");
+if(!ready){Q("#authBtn").onclick=()=>alert("Chưa cấu hình Firebase. Mở index.html, điền CFG ở đầu thẻ script type=module.")}
+else{
+const app=initializeApp(CFG),auth=getAuth(app),db=getFirestore(app);
+let user=null,mode="login";
+window.getToken=()=>user?user.getIdToken():null;
+window.openAuth=()=>{setMode("login");Q("#authDlg").showModal()};
+const EM={"auth/invalid-credential":"Email hoặc mật khẩu không đúng.","auth/invalid-email":"Email không hợp lệ.","auth/email-already-in-use":"Email này đã được đăng ký.","auth/weak-password":"Mật khẩu cần ít nhất 6 ký tự.","auth/popup-closed-by-user":"Bạn đã đóng cửa sổ đăng nhập.","auth/too-many-requests":"Thử quá nhiều lần, hãy đợi một lúc.","auth/network-request-failed":"Lỗi mạng, hãy thử lại.","auth/unauthorized-domain":"Tên miền này chưa được thêm vào Authorized domains trong Firebase."};
+const err=e=>{Q("#aErr").textContent=EM[e.code]||e.message};
+function setMode(m){mode=m;Q("#mLogin").setAttribute("aria-selected",m=="login");Q("#mReg").setAttribute("aria-selected",m=="reg");Q("#aName").hidden=m=="login";Q("#aGo").textContent=m=="login"?"Đăng nhập":"Tạo tài khoản";Q("#aPass").autocomplete=m=="login"?"current-password":"new-password";Q("#aErr").textContent=""}
+Q("#mLogin").onclick=()=>setMode("login");Q("#mReg").onclick=()=>setMode("reg");
+Q("#aClose").onclick=()=>Q("#authDlg").close();
+Q("#authBtn").onclick=()=>{if(user){signOut(auth)}else{setMode("login");Q("#authDlg").showModal()}};
+Q("#authForm").onsubmit=async e=>{
+  e.preventDefault();Q("#aErr").textContent="";
+  try{
+    const m=Q("#aMail").value.trim(),p=Q("#aPass").value;
+    if(mode=="login")await signInWithEmailAndPassword(auth,m,p);
+    else{const c=await createUserWithEmailAndPassword(auth,m,p);const n=Q("#aName").value.trim();if(n)await updateProfile(c.user,{displayName:n})}
+    Q("#authDlg").close();Q("#authForm").reset();
+  }catch(x){err(x)}
+};
+Q("#aGoogle").onclick=async()=>{try{await signInWithPopup(auth,new GoogleAuthProvider());Q("#authDlg").close()}catch(x){err(x)}};
+Q("#aReset").onclick=async()=>{
+  const m=Q("#aMail").value.trim();if(!m){Q("#aErr").textContent="Nhập email trước rồi bấm Quên mật khẩu.";return}
+  try{await sendPasswordResetEmail(auth,m);Q("#aErr").textContent="Đã gửi email đặt lại mật khẩu.";}catch(x){err(x)}
+};
+onAuthStateChanged(auth,u=>{
+  user=u;Q("#authBtn").textContent=u?"Đăng xuất":"Đăng nhập";
+  Q("#who").textContent=u?(u.displayName||u.email):"";
+  Q("#hmsg").hidden=!!u;Q("#hbody").hidden=!u;
+  if(u)load();else Q("#hlist").replaceChildren();
+});
+window.saveAttempt=async({part,question,result})=>{
+  if(!user){setStatus("Đăng nhập để lưu kết quả vào lịch sử.");return}
+  try{
+    await addDoc(collection(db,"users",user.uid,"attempts"),{part,question,result,overall:Number(result.overall)||0,createdAt:serverTimestamp()});
+    setStatus("Đã lưu vào lịch sử."+(window.__left!=null?" Hôm nay bạn còn "+window.__left+" lượt chấm.":""));load();
+  }catch(x){setStatus("Chấm xong nhưng chưa lưu được: "+x.message,1)}
+};
+async function load(){
+  try{
+    const snap=await getDocs(query(collection(db,"users",user.uid,"attempts"),orderBy("createdAt","desc"),limit(30)));
+    const rows=snap.docs.map(d=>({id:d.id,...d.data()}));
+    const bands=rows.map(r=>r.overall);
+    Q("#sN").textContent=rows.length;
+    Q("#sA").textContent=rows.length?(bands.reduce((a,b)=>a+b,0)/rows.length).toFixed(1):"–";
+    Q("#sB").textContent=rows.length?Math.max(...bands):"–";
+    spark(bands.slice().reverse());
+    const L=Q("#hlist");L.replaceChildren();
+    if(!rows.length)L.append(el("p",null,"Chưa có lần làm nào. Hãy ghi âm và bấm Chấm điểm."));
+    rows.forEach(r=>{
+      const d=r.createdAt?r.createdAt.toDate():new Date(),row=el("div","hi"),t=el("div","t");
+      t.append(el("div",null,"Part "+r.part+" · "+d.toLocaleString("vi-VN")),el("div",null,(r.question||"").split("\n")[0]));
+      t.firstChild.style.fontWeight="700";t.lastChild.style.color="var(--mute)";
+      const v=el("button","lnk","Xem lại"),x=el("button","lnk","Xóa");
+      v.onclick=()=>{Q("#q").textContent=r.question;show(r.result)};
+      x.onclick=async()=>{if(confirm("Xóa lần làm này?")){await deleteDoc(doc(db,"users",user.uid,"attempts",r.id));load()}};
+      row.append(el("span","bd",r.overall),t,v,x);L.append(row);
+    });
+  }catch(x){Q("#hmsg").hidden=false;Q("#hmsg").textContent="Không tải được lịch sử: "+x.message}
+}
+function spark(b){
+  const sv=Q("#spark");sv.replaceChildren();sv.style.display=b.length>1?"block":"none";if(b.length<2)return;
+  const ns="http://www.w3.org/2000/svg",pl=document.createElementNS(ns,"polyline");
+  const pts=b.map((v,i)=>(10+i*(280/(b.length-1)))+","+(60-((Math.min(9,Math.max(3,v))-3)/6)*50)).join(" ");
+  pl.setAttribute("points",pts);pl.setAttribute("fill","none");pl.setAttribute("stroke","currentColor");pl.setAttribute("stroke-width","3");pl.setAttribute("vector-effect","non-scaling-stroke");pl.setAttribute("stroke-linejoin","round");
+  sv.append(pl);
+}
+}
+</script>
+</body>
+</html>
